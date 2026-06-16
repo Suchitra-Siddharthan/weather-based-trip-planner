@@ -1,129 +1,132 @@
 # Weather-Based Trip Planner
 
-A full-stack web application that helps users plan their trips based on weather conditions. Built with the MERN stack (MongoDB, Express.js, React, Node.js).
+A full-stack web application that recommends travel activities and generates packing lists based on real-time and forecasted weather at a user's destination. Users can save trips, compare weather across multiple cities, and receive alerts for adverse conditions.
+
+---
 
 ## Features
 
-- User Authentication (Login/Register)
-- Destination Search
-- Real-time Weather Forecast
-- Weather-based Activity Recommendations
-- Trip Planning and Management
-- Packing List Generator
-- Weather Alerts and Notifications
-- Historical Weather Data
-- Multi-City Weather Comparison
+- JWT-based user authentication (register, login, protected routes)
+- Destination search with real-time weather fetching
+- 7-day weather forecast per destination
+- Weather-based activity recommendations (e.g. hiking for sunny days, museums for rainy days)
+- Packing list auto-generated from forecast data
+- Trip saving and management (create, view, delete trips)
+- Multi-city weather comparison
+- Weather alerts for severe conditions
+
+---
 
 ## Tech Stack
 
-### Frontend
-- React.js
-- React Bootstrap
-- React Router
-- React DatePicker
-- Axios
+| Layer    | Technology                              |
+|----------|-----------------------------------------|
+| Frontend | React.js, React Router, React Bootstrap, Axios |
+| Backend  | Node.js, Express.js                     |
+| Database | MongoDB, Mongoose                       |
+| Auth     | JWT, bcrypt                             |
+| Weather  | OpenWeatherMap API                      |
 
-### Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT Authentication
-- Bcrypt
+---
 
 ## Project Structure
 
 ```
-weather-app/
+weather-based-trip-planner/
 ├── backend/
 │   ├── models/
-│   │   ├── User.js
-│   │   └── Trip.js
+│   │   ├── User.js          # Mongoose schema for user accounts
+│   │   └── Trip.js          # Mongoose schema for saved trips
 │   ├── routes/
-│   │   ├── auth.js
-│   │   ├── trips.js
-│   │   └── weather.js
-│   ├── server.js
-│   └── package.json
+│   │   ├── auth.js          # Register, login, JWT issuance
+│   │   ├── trips.js         # CRUD operations for trips
+│   │   └── weather.js       # Proxy to OpenWeatherMap API
+│   └── server.js            # Express app entry point
 └── frontend/
-    ├── src/
-    │   ├── components/
-    │   │   └── Navbar.js
-    │   ├── pages/
-    │   │   ├── Home.js
-    │   │   ├── Login.js
-    │   │   ├── Register.js
-    │   │   ├── TripPlanner.js
-    │   │   ├── MyTrips.js
-    │   │   └── WeatherForecast.js
-    │   ├── App.js
-    │   └── index.js
-    └── package.json
+    └── src/
+        ├── components/
+        │   └── Navbar.js
+        ├── pages/
+        │   ├── Home.js
+        │   ├── Login.js
+        │   ├── Register.js
+        │   ├── TripPlanner.js
+        │   ├── MyTrips.js
+        │   └── WeatherForecast.js
+        └── App.js
 ```
+
+---
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB
-- npm or yarn
+
+- Node.js v14+
+- MongoDB (local or Atlas)
+- OpenWeatherMap API key (free tier works)
 
 ### Installation
 
-1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/weather-trip-planner.git
-cd weather-trip-planner
+# Clone the repo
+git clone https://github.com/Suchitra-Siddharthan/weather-based-trip-planner.git
+cd weather-based-trip-planner
 ```
 
-2. Install backend dependencies
 ```bash
+# Install backend dependencies
 cd backend
 npm install
 ```
 
-3. Install frontend dependencies
 ```bash
+# Install frontend dependencies
 cd ../frontend
 npm install
 ```
 
-4. Create a .env file in the backend directory
-```bash
-cd ../backend
-touch .env
-```
+### Environment Setup
 
-Add the following to your .env file:
-```
+Create a `.env` file inside the `backend/` directory:
+
+```env
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/weather-trip-planner
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_jwt_secret_here
+OPENWEATHER_API_KEY=your_openweathermap_api_key_here
 ```
 
-5. Start the backend server
+### Running the App
+
 ```bash
+# Start backend (from backend/)
 npm run dev
-```
 
-6. Start the frontend development server
-```bash
-cd ../frontend
+# Start frontend (from frontend/)
 npm start
 ```
 
-The application will be available at:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:5000
+- Frontend: http://localhost:3000  
+- Backend API: http://localhost:5000
 
-## Contributing
+---
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Design Decisions
 
-## License
+- **Weather proxied through the backend** — the OpenWeatherMap API key is never exposed to the client. All weather requests go through `/api/weather` on the Express server.
+- **JWT stored in localStorage** — kept simple for a portfolio project; a production app would use httpOnly cookies.
+- **MongoDB for trip storage** — schema-flexible enough to accommodate varying forecast lengths and activity lists without rigid relational constraints.
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+---
+
+## API Endpoints
+
+| Method | Endpoint              | Description                  | Auth Required |
+|--------|-----------------------|------------------------------|---------------|
+| POST   | /api/auth/register    | Create new user account      | No            |
+| POST   | /api/auth/login       | Login and receive JWT        | No            |
+| GET    | /api/weather/:city    | Fetch forecast for a city    | Yes           |
+| GET    | /api/trips            | Get all trips for user       | Yes           |
+| POST   | /api/trips            | Save a new trip              | Yes           |
+| DELETE | /api/trips/:id        | Delete a saved trip          | Yes           |
